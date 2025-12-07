@@ -1,5 +1,4 @@
-import { useEffect, useReducer, useState } from "react";
-import type { GameAction, GameState } from "../state/types";
+import React, { useEffect, useReducer, useState } from "react";
 import { gameReducer } from "../state/reducer";
 import { createInitialGameState } from "../state/logic";
 import { Room } from "./Room";
@@ -18,10 +17,8 @@ import "./animations.css";
  */
 const FIRST_VISIT_KEY = "scoundrel-first-visit";
 
-export function ScoundrelGame(): JSX.Element {
-  const [state, dispatch] = useReducer<
-    (state: GameState, action: GameAction) => GameState
-  >(gameReducer, createInitialGameState());
+export function ScoundrelGame(): React.ReactElement {
+  const [state, dispatch] = useReducer(gameReducer, createInitialGameState());
 
   const [showInstructions, setShowInstructions] = useState<boolean>(false);
 

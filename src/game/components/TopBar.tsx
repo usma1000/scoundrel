@@ -1,3 +1,4 @@
+import React from "react";
 import { RefreshIcon, InfoIcon } from "./Icons";
 import "./animations.css";
 
@@ -14,7 +15,7 @@ interface TopBarProps {
 export function TopBar({
   onNewGame,
   onShowInstructions,
-}: TopBarProps): JSX.Element {
+}: TopBarProps): React.ReactElement {
   const containerStyle: React.CSSProperties = {
     display: "flex",
     alignItems: "center",

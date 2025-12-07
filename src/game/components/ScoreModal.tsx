@@ -1,3 +1,4 @@
+import React from "react";
 import { TrophyIcon, SkullIcon, RefreshIcon } from "./Icons";
 import "./animations.css";
 
@@ -16,7 +17,7 @@ export function ScoreModal({
   status,
   score,
   onPlayAgain,
-}: ScoreModalProps): JSX.Element {
+}: ScoreModalProps): React.ReactElement {
   const isVictory = status === "cleared";
 
   const titleColor = isVictory ? "#10b981" : "#ef4444";

@@ -1,6 +1,7 @@
-import { ScoundrelGame } from './game/components/ScoundrelGame';
-import './App.css';
+import React from "react";
+import { ScoundrelGame } from "./game/components/ScoundrelGame";
+import "./App.css";
 
-export function App(): JSX.Element {
+export function App(): React.ReactElement {
   return <ScoundrelGame />;
 }

@@ -1,3 +1,4 @@
+import React from "react";
 import type { EquippedWeapon as EquippedWeaponType } from "../state/types";
 import { CardView } from "./CardView";
 import { SwordIcon, SkullIcon } from "./Icons";
@@ -12,7 +13,9 @@ interface EquippedWeaponProps {
  * @param props - Component props.
  * @returns EquippedWeapon component.
  */
-export function EquippedWeapon({ weapon }: EquippedWeaponProps): JSX.Element {
+export function EquippedWeapon({
+  weapon,
+}: EquippedWeaponProps): React.ReactElement {
   const containerStyle: React.CSSProperties = {
     display: "flex",
     flexDirection: "column",

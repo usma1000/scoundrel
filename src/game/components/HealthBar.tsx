@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { HeartIcon } from "./Icons";
 import "./animations.css";
 
@@ -12,7 +12,10 @@ interface HealthBarProps {
  * @param props - Component props.
  * @returns HealthBar component.
  */
-export function HealthBar({ health, maxHealth }: HealthBarProps): JSX.Element {
+export function HealthBar({
+  health,
+  maxHealth,
+}: HealthBarProps): React.ReactElement {
   const [isAnimating, setIsAnimating] = useState(false);
   const [previousHealth, setPreviousHealth] = useState(health);
   const containerRef = useRef<HTMLDivElement>(null);

@@ -1,3 +1,5 @@
+import React from "react";
+
 interface ControlsProps {
   onSkipRoom: () => void;
   canSkipRoom: boolean;
@@ -10,10 +12,10 @@ interface ControlsProps {
  * @returns Controls component.
  */
 export function Controls({
-  onSkipRoom,
-  canSkipRoom,
+  onSkipRoom: _onSkipRoom,
+  canSkipRoom: _canSkipRoom,
   status,
-}: ControlsProps): JSX.Element {
+}: ControlsProps): React.ReactElement | null {
   if (status !== "playing") {
     return null;
   }

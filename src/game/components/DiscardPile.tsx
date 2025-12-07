@@ -1,3 +1,4 @@
+import React from "react";
 import { DiscardIcon } from "./Icons";
 import "./animations.css";
 
@@ -10,7 +11,7 @@ interface DiscardPileProps {
  * @param props - Component props.
  * @returns DiscardPile component.
  */
-export function DiscardPile({ count }: DiscardPileProps): JSX.Element {
+export function DiscardPile({ count }: DiscardPileProps): React.ReactElement {
   const isEmpty = count === 0;
 
   const containerStyle: React.CSSProperties = {

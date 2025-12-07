@@ -1,3 +1,4 @@
+import React from "react";
 import { DeckIcon } from "./Icons";
 import "./animations.css";
 
@@ -10,7 +11,7 @@ interface DungeonDeckProps {
  * @param props - Component props.
  * @returns DungeonDeck component.
  */
-export function DungeonDeck({ count }: DungeonDeckProps): JSX.Element {
+export function DungeonDeck({ count }: DungeonDeckProps): React.ReactElement {
   const isEmpty = count === 0;
 
   const containerStyle: React.CSSProperties = {

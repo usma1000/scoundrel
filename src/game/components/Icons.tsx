@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import React, { type CSSProperties } from "react";
 
 interface IconProps {
   size?: number;
@@ -15,7 +15,7 @@ export function SkullIcon({
   color = "currentColor",
   className,
   style,
-}: IconProps): JSX.Element {
+}: IconProps): React.ReactElement {
   return (
     <svg
       width={size}
@@ -46,7 +46,7 @@ export function SwordIcon({
   color = "currentColor",
   className,
   style,
-}: IconProps): JSX.Element {
+}: IconProps): React.ReactElement {
   return (
     <svg
       width={size}
@@ -76,7 +76,7 @@ export function FlaskIcon({
   color = "currentColor",
   className,
   style,
-}: IconProps): JSX.Element {
+}: IconProps): React.ReactElement {
   return (
     <svg
       width={size}
@@ -105,7 +105,7 @@ export function DeckIcon({
   color = "currentColor",
   className,
   style,
-}: IconProps): JSX.Element {
+}: IconProps): React.ReactElement {
   return (
     <svg
       width={size}
@@ -134,7 +134,7 @@ export function DiscardIcon({
   color = "currentColor",
   className,
   style,
-}: IconProps): JSX.Element {
+}: IconProps): React.ReactElement {
   return (
     <svg
       width={size}
@@ -164,7 +164,7 @@ export function HeartIcon({
   color = "currentColor",
   className,
   style,
-}: IconProps): JSX.Element {
+}: IconProps): React.ReactElement {
   return (
     <svg
       width={size}
@@ -191,7 +191,7 @@ export function SkipIcon({
   color = "currentColor",
   className,
   style,
-}: IconProps): JSX.Element {
+}: IconProps): React.ReactElement {
   return (
     <svg
       width={size}
@@ -219,7 +219,7 @@ export function TrophyIcon({
   color = "currentColor",
   className,
   style,
-}: IconProps): JSX.Element {
+}: IconProps): React.ReactElement {
   return (
     <svg
       width={size}
@@ -251,7 +251,7 @@ export function RefreshIcon({
   color = "currentColor",
   className,
   style,
-}: IconProps): JSX.Element {
+}: IconProps): React.ReactElement {
   return (
     <svg
       width={size}
@@ -281,7 +281,7 @@ export function ShieldIcon({
   color = "currentColor",
   className,
   style,
-}: IconProps): JSX.Element {
+}: IconProps): React.ReactElement {
   return (
     <svg
       width={size}
@@ -308,7 +308,7 @@ export function CrosshairsIcon({
   color = "currentColor",
   className,
   style,
-}: IconProps): JSX.Element {
+}: IconProps): React.ReactElement {
   return (
     <svg
       width={size}
@@ -339,7 +339,7 @@ export function XIcon({
   color = "currentColor",
   className,
   style,
-}: IconProps): JSX.Element {
+}: IconProps): React.ReactElement {
   return (
     <svg
       width={size}
@@ -367,7 +367,7 @@ export function InfoIcon({
   color = "currentColor",
   className,
   style,
-}: IconProps): JSX.Element {
+}: IconProps): React.ReactElement {
   return (
     <svg
       width={size}
