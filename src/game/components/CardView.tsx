@@ -9,6 +9,7 @@ interface CardViewProps {
   showFightOption?: boolean;
   size?: "normal" | "small";
   animationDelay?: number;
+  weaponBlocked?: boolean;
 }
 
 const TYPE_CONFIG = {
@@ -48,6 +49,7 @@ export function CardView({
   showFightOption,
   size = "normal",
   animationDelay = 0,
+  weaponBlocked = false,
 }: CardViewProps): JSX.Element {
   const config = TYPE_CONFIG[card.type];
   const isClickable = onClick && !disabled;
@@ -145,6 +147,37 @@ export function CardView({
     boxShadow: "0 2px 8px rgba(245, 158, 11, 0.3)",
   };
 
+  const weaponBlockedBadgeStyle: React.CSSProperties = {
+    position: "absolute",
+    top: "8px",
+    left: "50%",
+    transform: "translateX(-50%)",
+    padding: "4px 10px",
+    background: "rgba(239, 68, 68, 0.9)",
+    borderRadius: "6px",
+    fontSize: "9px",
+    fontWeight: "700",
+    color: "#ffffff",
+    textTransform: "uppercase",
+    letterSpacing: "0.5px",
+    whiteSpace: "nowrap",
+    boxShadow: "0 2px 8px rgba(239, 68, 68, 0.4)",
+    zIndex: 10,
+  };
+
+  const weaponBlockedWarningStyle: React.CSSProperties = {
+    marginTop: "8px",
+    padding: "6px 10px",
+    background: "rgba(239, 68, 68, 0.15)",
+    border: "1px solid rgba(239, 68, 68, 0.3)",
+    borderRadius: "6px",
+    fontSize: "10px",
+    fontWeight: "600",
+    color: "#fca5a5",
+    textAlign: "center",
+    lineHeight: 1.3,
+  };
+
   return (
     <div style={{ position: "relative" }}>
       <div
@@ -160,6 +193,7 @@ export function CardView({
         role={onClick ? "button" : undefined}
         tabIndex={onClick && !disabled ? 0 : undefined}
       >
+        {weaponBlocked && <div style={weaponBlockedBadgeStyle}>No Weapon</div>}
         <div style={imageContainerStyle}>
           <img src={config.image} alt={config.label} style={imageStyle} />
         </div>
@@ -167,6 +201,10 @@ export function CardView({
           <span style={valueStyle}>{card.value}</span>
         </div>
       </div>
+
+      {weaponBlocked && !disabled && (
+        <div style={weaponBlockedWarningStyle}>Too strong for weapon</div>
+      )}
 
       {showFightOption &&
         card.type === "monster" &&

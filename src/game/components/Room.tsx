@@ -15,7 +15,22 @@ interface RoomProps {
 }
 
 /**
- * Displays the current room with up to 4 cards in a dark themed layout.
+ * Checks if a weapon can be used against a monster.
+ * @param weapon - The equipped weapon.
+ * @param monsterValue - The monster's value.
+ * @returns True if weapon can be used, false otherwise.
+ */
+function canUseWeaponAgainstMonster(
+  weapon: EquippedWeapon | null,
+  monsterValue: number
+): boolean {
+  if (!weapon) return false;
+  if (weapon.maxMonsterValueUsedOn === null) return true;
+  return monsterValue <= weapon.maxMonsterValueUsedOn;
+}
+
+/**
+ * Displays the current round with up to 4 cards in a dark themed layout.
  * @param props - Component props.
  * @returns Room component.
  */
@@ -128,8 +143,8 @@ export function Room({
   };
 
   const emptySlotStyle: React.CSSProperties = {
-    width: "140px",
-    height: "200px",
+    width: "150px",
+    height: "220px",
     borderRadius: "16px",
     border: "2px dashed rgba(63, 63, 90, 0.5)",
     background: "rgba(15, 15, 26, 0.3)",
@@ -150,7 +165,7 @@ export function Room({
     <div style={containerStyle}>
       <div style={headerStyle}>
         <div style={titleGroupStyle}>
-          <h2 style={titleStyle}>The Room</h2>
+          <h2 style={titleStyle}>Current Round</h2>
           <button
             onClick={onSkipRoom}
             disabled={!canSkipRoom}
@@ -172,7 +187,7 @@ export function Room({
             }}
           >
             <SkipIcon size={16} color={canSkipRoom ? "#ffffff" : "#64748b"} />
-            Skip Room
+            Skip Round
           </button>
         </div>
         <div style={remainingStyle}>
@@ -187,7 +202,7 @@ export function Room({
             return (
               <div
                 key={`empty-${index}`}
-                style={{ width: "140px", height: "200px" }}
+                style={{ width: "150px", height: "220px" }}
               />
             );
           }
@@ -202,21 +217,28 @@ export function Room({
             );
           }
 
+          const isMonster = card.type === "monster";
+          const weaponCanBeUsed =
+            isMonster && canUseWeaponAgainstMonster(equippedWeapon, card.value);
+          const hasWeaponButCantUse =
+            isMonster && equippedWeapon !== null && !weaponCanBeUsed;
+
           return (
             <CardView
               key={card.id}
               card={card}
-              onClick={() => onCardClick(card.id, true)}
+              onClick={() => onCardClick(card.id, weaponCanBeUsed)}
               onFightWithoutWeapon={
-                card.type === "monster" && equippedWeapon !== null
+                isMonster && equippedWeapon !== null && weaponCanBeUsed
                   ? () => onCardClick(card.id, false)
                   : undefined
               }
               showFightOption={
-                card.type === "monster" && equippedWeapon !== null
+                isMonster && equippedWeapon !== null && weaponCanBeUsed
               }
               disabled={!canSelect}
               animationDelay={index * 100}
+              weaponBlocked={hasWeaponButCantUse}
             />
           );
         })}

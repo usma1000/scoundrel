@@ -14,9 +14,18 @@ interface EquippedWeaponProps {
  */
 export function EquippedWeapon({ weapon }: EquippedWeaponProps): JSX.Element {
   const containerStyle: React.CSSProperties = {
-    flex: "1 1 auto",
-    minWidth: "180px",
-    maxWidth: "300px",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    width: "150px",
+  };
+
+  const labelStyle: React.CSSProperties = {
+    marginTop: "12px",
+    fontSize: "13px",
+    fontWeight: "600",
+    color: "#64748b",
+    textAlign: "center",
   };
 
   if (!weapon) {
@@ -24,7 +33,9 @@ export function EquippedWeapon({ weapon }: EquippedWeaponProps): JSX.Element {
       <div style={containerStyle}>
         <div
           style={{
-            padding: "20px",
+            width: "100px",
+            height: "150px",
+            padding: "16px",
             background: "rgba(15, 15, 26, 0.4)",
             borderRadius: "16px",
             border: "2px dashed rgba(63, 63, 90, 0.4)",
@@ -32,57 +43,34 @@ export function EquippedWeapon({ weapon }: EquippedWeaponProps): JSX.Element {
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            gap: "12px",
-            minHeight: "140px",
+            gap: "10px",
           }}
         >
           <div
             style={{
-              width: "48px",
-              height: "48px",
-              borderRadius: "12px",
+              width: "40px",
+              height: "40px",
+              borderRadius: "10px",
               background: "rgba(63, 63, 90, 0.3)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <SwordIcon size={24} color="#4a5568" />
+            <SwordIcon size={20} color="#4a5568" />
           </div>
-          <div>
-            <div
-              style={{
-                fontSize: "14px",
-                fontWeight: "600",
-                color: "#64748b",
-                textAlign: "center",
-              }}
-            >
-              No Weapon
-            </div>
-            <div
-              style={{
-                fontSize: "12px",
-                color: "#4a5568",
-                textAlign: "center",
-                marginTop: "4px",
-              }}
-            >
-              Pick up a weapon card
-            </div>
+          <div
+            style={{
+              fontSize: "11px",
+              fontWeight: "600",
+              color: "#4a5568",
+              textAlign: "center",
+            }}
+          >
+            No Weapon
           </div>
         </div>
-        <div
-          style={{
-            marginTop: "10px",
-            fontSize: "13px",
-            fontWeight: "600",
-            color: "#64748b",
-            textAlign: "center",
-          }}
-        >
-          Equipped Weapon
-        </div>
+        <div style={labelStyle}>Equipped Weapon</div>
       </div>
     );
   }
@@ -91,7 +79,7 @@ export function EquippedWeapon({ weapon }: EquippedWeaponProps): JSX.Element {
 
   return (
     <div style={containerStyle}>
-      <div style={{ position: "relative", display: "inline-block" }}>
+      <div style={{ position: "relative" }}>
         <CardView card={weapon.card} size="small" />
 
         {slainCount > 0 && (
@@ -145,17 +133,7 @@ export function EquippedWeapon({ weapon }: EquippedWeaponProps): JSX.Element {
         )}
       </div>
 
-      <div
-        style={{
-          marginTop: "12px",
-          fontSize: "13px",
-          fontWeight: "600",
-          color: "#64748b",
-          textAlign: "center",
-        }}
-      >
-        Equipped Weapon
-      </div>
+      <div style={labelStyle}>Equipped Weapon</div>
     </div>
   );
 }
