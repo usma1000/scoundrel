@@ -1,10 +1,10 @@
-import type { Card, GameState } from './types';
+import type { Card, GameState } from "./types";
 import {
   createBaseDeck,
   filterScoundrelDeck,
   mapCardTypes,
   shuffle,
-} from './deck';
+} from "./deck";
 
 /**
  * Creates the initial game state with a shuffled Scoundrel deck.
@@ -21,12 +21,13 @@ export function createInitialGameState(): GameState {
     roomCards: [],
     discardPile: [],
     equippedWeapon: null,
+    resolvedCardIds: [],
     health: 20,
     maxHealth: 20,
     skippedLastRoom: false,
     potionUsedThisTurn: false,
     cardsResolvedThisTurn: 0,
-    status: 'playing',
+    status: "playing",
     score: null,
     lastResolvedCard: null,
   };
@@ -39,7 +40,7 @@ export function createInitialGameState(): GameState {
  * @returns New game state with room built.
  */
 export function buildRoom(state: GameState): GameState {
-  if (state.status !== 'playing') {
+  if (state.status !== "playing") {
     return state;
   }
 
@@ -57,6 +58,7 @@ export function buildRoom(state: GameState): GameState {
     ...state,
     dungeonDeck: newDeck,
     roomCards: newRoomCards,
+    resolvedCardIds: [],
   };
 }
 
@@ -67,7 +69,7 @@ export function buildRoom(state: GameState): GameState {
  * @returns New game state with room skipped.
  */
 export function skipRoom(state: GameState): GameState {
-  if (state.status !== 'playing' || state.skippedLastRoom) {
+  if (state.status !== "playing" || state.skippedLastRoom) {
     return state;
   }
 
@@ -77,6 +79,7 @@ export function skipRoom(state: GameState): GameState {
     ...state,
     dungeonDeck: newDeck,
     roomCards: [],
+    resolvedCardIds: [],
     skippedLastRoom: true,
     potionUsedThisTurn: false,
     cardsResolvedThisTurn: 0,
@@ -89,7 +92,7 @@ export function skipRoom(state: GameState): GameState {
  * @returns New game state with room entered.
  */
 export function enterRoom(state: GameState): GameState {
-  if (state.status !== 'playing') {
+  if (state.status !== "playing") {
     return state;
   }
 
@@ -98,6 +101,7 @@ export function enterRoom(state: GameState): GameState {
     skippedLastRoom: false,
     potionUsedThisTurn: false,
     cardsResolvedThisTurn: 0,
+    resolvedCardIds: [],
   };
 }
 
@@ -105,10 +109,15 @@ export function enterRoom(state: GameState): GameState {
  * Resolves a card based on its type (monster, weapon, or potion).
  * @param state - Current game state.
  * @param cardId - ID of the card to resolve.
+ * @param useWeapon - Whether to use equipped weapon for monsters (default: true if available).
  * @returns New game state after card resolution.
  */
-export function resolveCard(state: GameState, cardId: string): GameState {
-  if (state.status !== 'playing') {
+export function resolveCard(
+  state: GameState,
+  cardId: string,
+  useWeapon: boolean = true
+): GameState {
+  if (state.status !== "playing") {
     return state;
   }
 
@@ -121,27 +130,32 @@ export function resolveCard(state: GameState, cardId: string): GameState {
     return state;
   }
 
+  if (state.resolvedCardIds.includes(cardId)) {
+    return state;
+  }
+
   const card = state.roomCards[cardIndex];
-  const newRoomCards = state.roomCards.filter((c) => c.id !== cardId);
+  const newResolvedCardIds = [...state.resolvedCardIds, cardId];
+
   let newState: GameState = {
     ...state,
-    roomCards: newRoomCards,
+    resolvedCardIds: newResolvedCardIds,
     cardsResolvedThisTurn: state.cardsResolvedThisTurn + 1,
     lastResolvedCard: card,
   };
 
-  if (card.type === 'monster') {
-    newState = resolveMonster(newState, card);
-  } else if (card.type === 'weapon') {
+  if (card.type === "monster") {
+    newState = resolveMonster(newState, card, useWeapon);
+  } else if (card.type === "weapon") {
     newState = resolveWeapon(newState, card);
-  } else if (card.type === 'potion') {
+  } else if (card.type === "potion") {
     newState = resolvePotion(newState, card);
   }
 
   if (newState.health <= 0) {
     newState = {
       ...newState,
-      status: 'dead',
+      status: "dead",
       score: computeDeathScore(newState),
     };
   }
@@ -153,10 +167,16 @@ export function resolveCard(state: GameState, cardId: string): GameState {
  * Resolves a monster card through combat.
  * @param state - Current game state.
  * @param monster - Monster card to fight.
+ * @param useWeapon - Whether to use equipped weapon (default: true if available).
  * @returns New game state after combat.
  */
-function resolveMonster(state: GameState, monster: Card): GameState {
+function resolveMonster(
+  state: GameState,
+  monster: Card,
+  useWeapon: boolean = true
+): GameState {
   const canUseWeapon =
+    useWeapon &&
     state.equippedWeapon !== null &&
     (state.equippedWeapon.maxMonsterValueUsedOn === null ||
       monster.value <= state.equippedWeapon.maxMonsterValueUsedOn);
@@ -248,7 +268,7 @@ function resolvePotion(state: GameState, potion: Card): GameState {
  * @returns New game state after turn ends.
  */
 export function endTurnIfReady(state: GameState): GameState {
-  if (state.status !== 'playing') {
+  if (state.status !== "playing") {
     return state;
   }
 
@@ -256,12 +276,18 @@ export function endTurnIfReady(state: GameState): GameState {
     return state;
   }
 
-  if (state.roomCards.length !== 1) {
+  const unresolvedCards = state.roomCards.filter(
+    (c) => !state.resolvedCardIds.includes(c.id)
+  );
+
+  if (unresolvedCards.length !== 1) {
     return state;
   }
 
   const newState: GameState = {
     ...state,
+    roomCards: unresolvedCards,
+    resolvedCardIds: [],
     potionUsedThisTurn: false,
     cardsResolvedThisTurn: 0,
   };
@@ -269,7 +295,7 @@ export function endTurnIfReady(state: GameState): GameState {
   if (newState.dungeonDeck.length === 0 && newState.roomCards.length === 1) {
     return {
       ...newState,
-      status: 'cleared',
+      status: "cleared",
       score: computeClearScore(newState),
     };
   }
@@ -284,14 +310,17 @@ export function endTurnIfReady(state: GameState): GameState {
  * @returns Death score (typically negative or zero).
  */
 export function computeDeathScore(state: GameState): number {
+  const unresolvedRoomCards = state.roomCards.filter(
+    (c) => !state.resolvedCardIds.includes(c.id)
+  );
   const remainingMonsters = [
     ...state.dungeonDeck,
-    ...state.roomCards,
-  ].filter((card) => card.type === 'monster');
+    ...unresolvedRoomCards,
+  ].filter((card) => card.type === "monster");
 
   const totalMonsterValue = remainingMonsters.reduce(
     (sum, card) => sum + card.value,
-    0,
+    0
   );
 
   return state.health - totalMonsterValue;
@@ -312,11 +341,10 @@ export function computeClearScore(state: GameState): number {
   if (
     state.health === 20 &&
     state.lastResolvedCard &&
-    state.lastResolvedCard.type === 'potion'
+    state.lastResolvedCard.type === "potion"
   ) {
     return state.health + state.lastResolvedCard.value;
   }
 
   return state.health;
 }
-

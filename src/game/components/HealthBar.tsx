@@ -9,39 +9,65 @@ interface HealthBarProps {
  * @returns HealthBar component.
  */
 export function HealthBar({ health, maxHealth }: HealthBarProps): JSX.Element {
-  const percentage = (health / maxHealth) * 100;
-  const healthColor = health > maxHealth * 0.5 ? '#4CAF50' : health > maxHealth * 0.25 ? '#FF9800' : '#F44336';
+  const percentage = Math.max(0, (health / maxHealth) * 100);
+  const healthColor =
+    health > maxHealth * 0.5
+      ? "#10b981"
+      : health > maxHealth * 0.25
+      ? "#f59e0b"
+      : "#ef4444";
 
   return (
-    <div style={{ margin: '10px 0' }}>
-      <h4>Health: {health} / {maxHealth}</h4>
+    <div style={{ margin: "32px 0" }}>
       <div
         style={{
-          width: '300px',
-          height: '30px',
-          border: '2px solid #333',
-          borderRadius: '4px',
-          backgroundColor: '#f0f0f0',
-          overflow: 'hidden',
+          display: "flex",
+          alignItems: "center",
+          marginBottom: "12px",
+        }}
+      >
+        <h3
+          style={{
+            margin: 0,
+            fontSize: "20px",
+            fontWeight: "600",
+            color: "#1a1a1a",
+          }}
+        >
+          Health
+        </h3>
+      </div>
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "500px",
+          height: "40px",
+          border: "3px solid #e5e7eb",
+          borderRadius: "12px",
+          backgroundColor: "#f9fafb",
+          overflow: "hidden",
+          position: "relative",
+          boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.06)",
         }}
       >
         <div
           style={{
             width: `${percentage}%`,
-            height: '100%',
+            height: "100%",
             backgroundColor: healthColor,
-            transition: 'width 0.3s ease',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'white',
-            fontWeight: 'bold',
+            transition: "width 0.3s ease, background-color 0.3s ease",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "white",
+            fontWeight: "700",
+            fontSize: "18px",
+            textShadow: "0 1px 2px rgba(0, 0, 0, 0.2)",
           }}
         >
-          {health > 0 && `${health}`}
+          {health > 0 && `${Math.max(0, health)} / ${maxHealth}`}
         </div>
       </div>
     </div>
   );
 }
-

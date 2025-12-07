@@ -1,10 +1,8 @@
-export type Suit = 'hearts' | 'diamonds' | 'clubs' | 'spades';
+export type Suit = "hearts" | "diamonds" | "clubs" | "spades";
 
-export type Rank =
-  | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
-  | 'J' | 'Q' | 'K' | 'A';
+export type Rank = 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | "J" | "Q" | "K" | "A";
 
-export type CardType = 'monster' | 'weapon' | 'potion';
+export type CardType = "monster" | "weapon" | "potion";
 
 export interface Card {
   id: string;
@@ -20,13 +18,14 @@ export interface EquippedWeapon {
   maxMonsterValueUsedOn: number | null;
 }
 
-export type GameStatus = 'playing' | 'dead' | 'cleared';
+export type GameStatus = "playing" | "dead" | "cleared";
 
 export interface GameState {
   dungeonDeck: Card[];
   roomCards: Card[];
   discardPile: Card[];
   equippedWeapon: EquippedWeapon | null;
+  resolvedCardIds: string[];
 
   health: number;
   maxHealth: number;
@@ -41,10 +40,9 @@ export interface GameState {
 }
 
 export type GameAction =
-  | { type: 'START_NEW_GAME' }
-  | { type: 'BUILD_ROOM' }
-  | { type: 'ENTER_ROOM' }
-  | { type: 'SKIP_ROOM' }
-  | { type: 'RESOLVE_CARD'; cardId: string }
-  | { type: 'END_TURN_IF_READY' };
-
+  | { type: "START_NEW_GAME" }
+  | { type: "BUILD_ROOM" }
+  | { type: "ENTER_ROOM" }
+  | { type: "SKIP_ROOM" }
+  | { type: "RESOLVE_CARD"; cardId: string; useWeapon?: boolean }
+  | { type: "END_TURN_IF_READY" };

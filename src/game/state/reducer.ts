@@ -1,4 +1,4 @@
-import type { GameAction, GameState } from './types';
+import type { GameAction, GameState } from "./types";
 import {
   buildRoom,
   createInitialGameState,
@@ -6,7 +6,7 @@ import {
   enterRoom,
   resolveCard,
   skipRoom,
-} from './logic';
+} from "./logic";
 
 /**
  * Reducer function that handles all game state transitions.
@@ -14,21 +14,18 @@ import {
  * @param action - Action to dispatch.
  * @returns New game state after applying the action.
  */
-export function gameReducer(
-  state: GameState,
-  action: GameAction,
-): GameState {
+export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
-    case 'START_NEW_GAME': {
+    case "START_NEW_GAME": {
       const newState = createInitialGameState();
       return buildRoom(newState);
     }
 
-    case 'BUILD_ROOM': {
+    case "BUILD_ROOM": {
       return buildRoom(state);
     }
 
-    case 'SKIP_ROOM': {
+    case "SKIP_ROOM": {
       const skippedState = skipRoom(state);
       if (skippedState === state) {
         return state;
@@ -36,15 +33,16 @@ export function gameReducer(
       return buildRoom(skippedState);
     }
 
-    case 'ENTER_ROOM': {
+    case "ENTER_ROOM": {
       return enterRoom(state);
     }
 
-    case 'RESOLVE_CARD': {
-      const resolvedState = resolveCard(state, action.cardId);
+    case "RESOLVE_CARD": {
+      const useWeapon = action.useWeapon ?? true;
+      const resolvedState = resolveCard(state, action.cardId, useWeapon);
       const endedState = endTurnIfReady(resolvedState);
       if (
-        endedState.status === 'playing' &&
+        endedState.status === "playing" &&
         endedState.cardsResolvedThisTurn === 0 &&
         endedState.roomCards.length === 1
       ) {
@@ -53,9 +51,12 @@ export function gameReducer(
       return endedState;
     }
 
-    case 'END_TURN_IF_READY': {
+    case "END_TURN_IF_READY": {
       const endedState = endTurnIfReady(state);
-      if (endedState.status === 'playing' && endedState.cardsResolvedThisTurn === 0) {
+      if (
+        endedState.status === "playing" &&
+        endedState.cardsResolvedThisTurn === 0
+      ) {
         return buildRoom(endedState);
       }
       return endedState;
@@ -66,4 +67,3 @@ export function gameReducer(
     }
   }
 }
-

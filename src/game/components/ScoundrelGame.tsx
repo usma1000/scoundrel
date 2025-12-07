@@ -1,14 +1,14 @@
-import { useEffect, useReducer } from 'react';
-import type { GameAction, GameState } from '../state/types';
-import { gameReducer } from '../state/reducer';
-import { createInitialGameState } from '../state/logic';
-import { Room } from './Room';
-import { DungeonDeck } from './DungeonDeck';
-import { EquippedWeapon } from './EquippedWeapon';
-import { DiscardPile } from './DiscardPile';
-import { HealthBar } from './HealthBar';
-import { Controls } from './Controls';
-import { ScoreModal } from './ScoreModal';
+import { useEffect, useReducer } from "react";
+import type { GameAction, GameState } from "../state/types";
+import { gameReducer } from "../state/reducer";
+import { createInitialGameState } from "../state/logic";
+import { Room } from "./Room";
+import { DungeonDeck } from "./DungeonDeck";
+import { EquippedWeapon } from "./EquippedWeapon";
+import { DiscardPile } from "./DiscardPile";
+import { HealthBar } from "./HealthBar";
+import { ScoreModal } from "./ScoreModal";
+import { TopBar } from "./TopBar";
 
 /**
  * Main game component that manages game state and renders all UI elements.
@@ -20,92 +20,90 @@ export function ScoundrelGame(): JSX.Element {
   >(gameReducer, createInitialGameState());
 
   useEffect(() => {
-    if (state.status === 'playing' && state.roomCards.length === 0) {
-      dispatch({ type: 'BUILD_ROOM' });
+    if (state.status === "playing" && state.roomCards.length === 0) {
+      dispatch({ type: "BUILD_ROOM" });
     }
   }, [state.status, state.roomCards.length]);
 
   const handleNewGame = (): void => {
-    dispatch({ type: 'START_NEW_GAME' });
+    dispatch({ type: "START_NEW_GAME" });
   };
 
   const handleSkipRoom = (): void => {
-    dispatch({ type: 'SKIP_ROOM' });
+    dispatch({ type: "SKIP_ROOM" });
   };
 
-  const handleCardClick = (cardId: string): void => {
-    if (state.status !== 'playing') {
+  const handleCardClick = (cardId: string, useWeapon: boolean = true): void => {
+    if (state.status !== "playing") {
       return;
     }
     if (state.cardsResolvedThisTurn >= 3) {
       return;
     }
-    dispatch({ type: 'RESOLVE_CARD', cardId });
+    dispatch({ type: "RESOLVE_CARD", cardId, useWeapon });
   };
 
   const handlePlayAgain = (): void => {
-    dispatch({ type: 'START_NEW_GAME' });
+    dispatch({ type: "START_NEW_GAME" });
   };
 
   const canResolveMore =
-    state.status === 'playing' && state.cardsResolvedThisTurn < 3;
+    state.status === "playing" && state.cardsResolvedThisTurn < 3;
 
   const containerStyle: React.CSSProperties = {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    padding: '20px',
-    fontFamily: 'Arial, sans-serif',
+    maxWidth: "1400px",
+    margin: "0 auto",
+    padding: "0",
+    backgroundColor: "#f5f5f5",
+    minHeight: "100vh",
   };
 
-  const gridStyle: React.CSSProperties = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-    gap: '20px',
-    marginBottom: '20px',
+  const contentStyle: React.CSSProperties = {
+    padding: "24px",
+  };
+
+  const bottomRowStyle: React.CSSProperties = {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "20px",
+    alignItems: "flex-start",
+    marginTop: "24px",
   };
 
   return (
     <div style={containerStyle}>
-      <h1>Scoundrel</h1>
+      <TopBar onNewGame={handleNewGame} />
 
-      <div style={gridStyle}>
-        <div>
+      <div style={contentStyle}>
+        <HealthBar health={state.health} maxHealth={state.maxHealth} />
+
+        {state.status === "playing" && state.roomCards.length > 0 && (
+          <Room
+            cards={state.roomCards}
+            resolvedCardIds={state.resolvedCardIds}
+            equippedWeapon={state.equippedWeapon}
+            onCardClick={handleCardClick}
+            onSkipRoom={handleSkipRoom}
+            canSkipRoom={!state.skippedLastRoom && state.status === "playing"}
+            cardsResolvedThisTurn={state.cardsResolvedThisTurn}
+            canResolveMore={canResolveMore}
+          />
+        )}
+
+        <div style={bottomRowStyle}>
           <DungeonDeck count={state.dungeonDeck.length} />
-        </div>
-        <div>
           <DiscardPile count={state.discardPile.length} />
+          <EquippedWeapon weapon={state.equippedWeapon} />
         </div>
-        <div>
-          <HealthBar health={state.health} maxHealth={state.maxHealth} />
-        </div>
+
+        {(state.status === "dead" || state.status === "cleared") && (
+          <ScoreModal
+            status={state.status}
+            score={state.score}
+            onPlayAgain={handlePlayAgain}
+          />
+        )}
       </div>
-
-      <EquippedWeapon weapon={state.equippedWeapon} />
-
-      <Controls
-        onNewGame={handleNewGame}
-        onSkipRoom={handleSkipRoom}
-        canSkipRoom={!state.skippedLastRoom && state.status === 'playing'}
-        status={state.status}
-      />
-
-      {state.status === 'playing' && state.roomCards.length > 0 && (
-        <Room
-          cards={state.roomCards}
-          onCardClick={handleCardClick}
-          cardsResolvedThisTurn={state.cardsResolvedThisTurn}
-          canResolveMore={canResolveMore}
-        />
-      )}
-
-      {(state.status === 'dead' || state.status === 'cleared') && (
-        <ScoreModal
-          status={state.status}
-          score={state.score}
-          onPlayAgain={handlePlayAgain}
-        />
-      )}
     </div>
   );
 }
-
