@@ -9,6 +9,7 @@ import { DiscardPile } from "./DiscardPile";
 import { HealthBar } from "./HealthBar";
 import { ScoreModal } from "./ScoreModal";
 import { TopBar } from "./TopBar";
+import "./animations.css";
 
 /**
  * Main game component that manages game state and renders all UI elements.
@@ -51,23 +52,32 @@ export function ScoundrelGame(): JSX.Element {
     state.status === "playing" && state.cardsResolvedThisTurn < 3;
 
   const containerStyle: React.CSSProperties = {
-    maxWidth: "1400px",
+    maxWidth: "1200px",
     margin: "0 auto",
-    padding: "0",
-    backgroundColor: "#f5f5f5",
     minHeight: "100vh",
+    background: "transparent",
   };
 
   const contentStyle: React.CSSProperties = {
     padding: "24px",
   };
 
+  const topSectionStyle: React.CSSProperties = {
+    marginBottom: "24px",
+  };
+
   const bottomRowStyle: React.CSSProperties = {
     display: "flex",
     flexWrap: "wrap",
-    gap: "20px",
+    gap: "24px",
     alignItems: "flex-start",
-    marginTop: "24px",
+    justifyContent: "center",
+    marginTop: "32px",
+    padding: "24px",
+    background:
+      "linear-gradient(135deg, rgba(30, 30, 47, 0.4) 0%, rgba(26, 26, 46, 0.2) 100%)",
+    borderRadius: "20px",
+    border: "1px solid rgba(63, 63, 90, 0.2)",
   };
 
   return (
@@ -75,7 +85,9 @@ export function ScoundrelGame(): JSX.Element {
       <TopBar onNewGame={handleNewGame} />
 
       <div style={contentStyle}>
-        <HealthBar health={state.health} maxHealth={state.maxHealth} />
+        <div style={topSectionStyle}>
+          <HealthBar health={state.health} maxHealth={state.maxHealth} />
+        </div>
 
         {state.status === "playing" && state.roomCards.length > 0 && (
           <Room

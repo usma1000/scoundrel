@@ -1,167 +1,160 @@
-import type { EquippedWeapon } from "../state/types";
+import type { EquippedWeapon as EquippedWeaponType } from "../state/types";
 import { CardView } from "./CardView";
+import { SwordIcon, SkullIcon } from "./Icons";
+import "./animations.css";
 
 interface EquippedWeaponProps {
-  weapon: EquippedWeapon | null;
+  weapon: EquippedWeaponType | null;
 }
 
 /**
- * Displays the currently equipped weapon and stacked slain monsters.
+ * Simplified equipped weapon display showing just the card with a slain count badge.
  * @param props - Component props.
  * @returns EquippedWeapon component.
  */
 export function EquippedWeapon({ weapon }: EquippedWeaponProps): JSX.Element {
+  const containerStyle: React.CSSProperties = {
+    flex: "1 1 auto",
+    minWidth: "180px",
+    maxWidth: "300px",
+  };
+
   if (!weapon) {
     return (
-      <div
-        style={{
-          flex: "1 1 auto",
-          minWidth: "300px",
-          padding: "24px",
-          backgroundColor: "#f9fafb",
-          borderRadius: "16px",
-          border: "2px dashed #d1d5db",
-          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.05)",
-        }}
-      >
-        <h3
+      <div style={containerStyle}>
+        <div
           style={{
-            margin: "0 0 8px 0",
-            color: "#6b7280",
-            fontSize: "18px",
+            padding: "20px",
+            background: "rgba(15, 15, 26, 0.4)",
+            borderRadius: "16px",
+            border: "2px dashed rgba(63, 63, 90, 0.4)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "12px",
+            minHeight: "140px",
+          }}
+        >
+          <div
+            style={{
+              width: "48px",
+              height: "48px",
+              borderRadius: "12px",
+              background: "rgba(63, 63, 90, 0.3)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <SwordIcon size={24} color="#4a5568" />
+          </div>
+          <div>
+            <div
+              style={{
+                fontSize: "14px",
+                fontWeight: "600",
+                color: "#64748b",
+                textAlign: "center",
+              }}
+            >
+              No Weapon
+            </div>
+            <div
+              style={{
+                fontSize: "12px",
+                color: "#4a5568",
+                textAlign: "center",
+                marginTop: "4px",
+              }}
+            >
+              Pick up a weapon card
+            </div>
+          </div>
+        </div>
+        <div
+          style={{
+            marginTop: "10px",
+            fontSize: "13px",
             fontWeight: "600",
+            color: "#64748b",
+            textAlign: "center",
           }}
         >
           Equipped Weapon
-        </h3>
-        <p style={{ margin: 0, color: "#9ca3af", fontSize: "15px" }}>None</p>
+        </div>
       </div>
     );
   }
 
+  const slainCount = weapon.slainMonsters.length;
+
   return (
-    <div
-      style={{
-        flex: "1 1 auto",
-        minWidth: "300px",
-        padding: "24px",
-        backgroundColor: "#ffffff",
-        borderRadius: "16px",
-        border: "3px solid #2563EB",
-        boxShadow: "0 4px 12px rgba(37, 99, 235, 0.15)",
-      }}
-    >
-      <h3
+    <div style={containerStyle}>
+      <div style={{ position: "relative", display: "inline-block" }}>
+        <CardView card={weapon.card} size="small" />
+
+        {slainCount > 0 && (
+          <div
+            style={{
+              position: "absolute",
+              top: "-8px",
+              right: "-8px",
+              display: "flex",
+              alignItems: "center",
+              gap: "4px",
+              padding: "4px 10px",
+              background: "linear-gradient(135deg, #ff4757 0%, #c0392b 100%)",
+              borderRadius: "20px",
+              boxShadow: "0 2px 10px rgba(255, 71, 87, 0.4)",
+              animation: "badgePop 0.3s ease-out",
+            }}
+          >
+            <SkullIcon size={14} color="#ffffff" />
+            <span
+              style={{
+                fontSize: "13px",
+                fontWeight: "700",
+                color: "#ffffff",
+              }}
+            >
+              {slainCount}
+            </span>
+          </div>
+        )}
+
+        {weapon.maxMonsterValueUsedOn !== null && (
+          <div
+            style={{
+              position: "absolute",
+              bottom: "-6px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              padding: "3px 10px",
+              background: "rgba(15, 15, 26, 0.9)",
+              border: "1px solid rgba(59, 130, 246, 0.4)",
+              borderRadius: "12px",
+              fontSize: "11px",
+              fontWeight: "600",
+              color: "#94a3b8",
+              whiteSpace: "nowrap",
+            }}
+          >
+            Max: {weapon.maxMonsterValueUsedOn}
+          </div>
+        )}
+      </div>
+
+      <div
         style={{
-          margin: "0 0 20px 0",
-          fontSize: "20px",
-          fontWeight: "700",
-          color: "#1a1a1a",
+          marginTop: "12px",
+          fontSize: "13px",
+          fontWeight: "600",
+          color: "#64748b",
+          textAlign: "center",
         }}
       >
         Equipped Weapon
-      </h3>
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "16px",
-          alignItems: "flex-start",
-        }}
-      >
-        <CardView card={weapon.card} />
-        <div style={{ flex: 1, minWidth: "200px" }}>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
-              gap: "12px",
-              marginTop: "8px",
-            }}
-          >
-            <div
-              style={{
-                padding: "16px",
-                backgroundColor: "#eff6ff",
-                borderRadius: "12px",
-                border: "1px solid #dbeafe",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: "13px",
-                  color: "#64748b",
-                  marginBottom: "6px",
-                  fontWeight: "500",
-                }}
-              >
-                Power
-              </div>
-              <div
-                style={{
-                  fontSize: "28px",
-                  fontWeight: "700",
-                  color: "#2563EB",
-                }}
-              >
-                {weapon.card.value}
-              </div>
-            </div>
-            <div
-              style={{
-                padding: "16px",
-                backgroundColor: "#eff6ff",
-                borderRadius: "12px",
-                border: "1px solid #dbeafe",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: "13px",
-                  color: "#64748b",
-                  marginBottom: "6px",
-                  fontWeight: "500",
-                }}
-              >
-                Max Monster
-              </div>
-              <div
-                style={{
-                  fontSize: "28px",
-                  fontWeight: "700",
-                  color: "#2563EB",
-                }}
-              >
-                {weapon.maxMonsterValueUsedOn ?? "—"}
-              </div>
-            </div>
-          </div>
-          {weapon.slainMonsters.length > 0 && (
-            <div style={{ marginTop: "20px" }}>
-              <div
-                style={{
-                  fontSize: "15px",
-                  fontWeight: "600",
-                  color: "#374151",
-                  marginBottom: "12px",
-                }}
-              >
-                Slain Monsters:
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: "12px",
-                }}
-              >
-                {weapon.slainMonsters.map((monster) => (
-                  <CardView key={monster.id} card={monster} />
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
       </div>
     </div>
   );

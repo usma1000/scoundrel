@@ -1,4 +1,6 @@
 import type { Card } from "../state/types";
+import { SkullIcon, SwordIcon, FlaskIcon } from "./Icons";
+import "./animations.css";
 
 interface CardViewProps {
   card: Card;
@@ -6,10 +8,36 @@ interface CardViewProps {
   disabled?: boolean;
   onFightWithoutWeapon?: () => void;
   showFightOption?: boolean;
+  size?: "normal" | "small";
+  animationDelay?: number;
 }
 
+const TYPE_CONFIG = {
+  monster: {
+    color: "#ff4757",
+    glow: "rgba(255, 71, 87, 0.4)",
+    glowStrong: "rgba(255, 71, 87, 0.6)",
+    label: "Monster",
+    Icon: SkullIcon,
+  },
+  weapon: {
+    color: "#3b82f6",
+    glow: "rgba(59, 130, 246, 0.4)",
+    glowStrong: "rgba(59, 130, 246, 0.6)",
+    label: "Weapon",
+    Icon: SwordIcon,
+  },
+  potion: {
+    color: "#f472b6",
+    glow: "rgba(244, 114, 182, 0.4)",
+    glowStrong: "rgba(244, 114, 182, 0.6)",
+    label: "Potion",
+    Icon: FlaskIcon,
+  },
+};
+
 /**
- * Visual representation of a card showing only type and value.
+ * Visual representation of a card with icons, glowing borders, and animations.
  * @param props - Component props.
  * @returns Card component.
  */
@@ -19,66 +47,111 @@ export function CardView({
   disabled,
   onFightWithoutWeapon,
   showFightOption,
+  size = "normal",
+  animationDelay = 0,
 }: CardViewProps): JSX.Element {
-  const typeColors: Record<string, string> = {
-    monster: "#6B4423",
-    weapon: "#2563EB",
-    potion: "#EC4899",
-  };
-
-  const typeLabels: Record<string, string> = {
-    monster: "Monster",
-    weapon: "Weapon",
-    potion: "Potion",
-  };
-
-  const borderColor = typeColors[card.type];
+  const config = TYPE_CONFIG[card.type];
   const isClickable = onClick && !disabled;
+  const isSmall = size === "small";
+
+  const cardWidth = isSmall ? "100px" : "140px";
+  const cardHeight = isSmall ? "140px" : "200px";
+  const valueSize = isSmall ? "32px" : "48px";
+  const iconSize = isSmall ? 20 : 28;
+  const labelSize = isSmall ? "10px" : "12px";
 
   const cardStyle: React.CSSProperties = {
-    border: `3px solid ${borderColor}`,
+    position: "relative",
+    width: cardWidth,
+    height: cardHeight,
     borderRadius: "16px",
-    padding: "24px 20px",
-    margin: "0",
-    width: "180px",
-    minHeight: "240px",
+    padding: "16px",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#ffffff",
+    gap: "8px",
+    background: `linear-gradient(145deg, #2a2a40 0%, #1e1e2f 100%)`,
+    border: `2px solid ${config.color}`,
+    boxShadow: `0 4px 20px rgba(0, 0, 0, 0.4), 0 0 15px ${config.glow}`,
     cursor: isClickable ? "pointer" : "default",
     opacity: disabled ? 0.5 : 1,
-    boxShadow: isClickable
-      ? "0 6px 12px rgba(0, 0, 0, 0.15)"
-      : "0 3px 6px rgba(0, 0, 0, 0.1)",
-    transition: "all 0.2s ease",
-    position: "relative",
+    transition: "all 0.25s ease",
+    animation: `cardEntrance 0.4s ease-out ${animationDelay}ms backwards`,
+    overflow: "hidden",
+  };
+
+  const glowOverlayStyle: React.CSSProperties = {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    borderRadius: "14px",
+    background: `radial-gradient(ellipse at top, ${config.glow} 0%, transparent 70%)`,
+    opacity: 0.3,
+    pointerEvents: "none",
+  };
+
+  const iconContainerStyle: React.CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: isSmall ? "36px" : "48px",
+    height: isSmall ? "36px" : "48px",
+    borderRadius: "12px",
+    background: `linear-gradient(135deg, ${config.color}20 0%, ${config.color}10 100%)`,
+    border: `1px solid ${config.color}40`,
   };
 
   const valueStyle: React.CSSProperties = {
-    fontSize: "56px",
-    fontWeight: "700",
-    color: borderColor,
-    marginBottom: "16px",
-    lineHeight: "1",
+    fontSize: valueSize,
+    fontWeight: "800",
+    color: config.color,
+    lineHeight: 1,
+    textShadow: `0 0 20px ${config.glow}`,
   };
 
-  const typeStyle: React.CSSProperties = {
-    fontSize: "16px",
+  const labelStyle: React.CSSProperties = {
+    fontSize: labelSize,
     fontWeight: "600",
-    color: borderColor,
+    color: "#94a3b8",
     textTransform: "uppercase",
-    letterSpacing: "1px",
-    whiteSpace: "nowrap",
+    letterSpacing: "1.5px",
   };
 
-  const hoverStyle: React.CSSProperties = isClickable
-    ? {
-        transform: "translateY(-4px)",
-        boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
-      }
-    : {};
+  const handleHover = (
+    e: React.MouseEvent<HTMLDivElement>,
+    entering: boolean
+  ): void => {
+    if (!isClickable) return;
+    const target = e.currentTarget;
+    if (entering) {
+      target.style.transform = "translateY(-6px) scale(1.02)";
+      target.style.boxShadow = `0 8px 30px rgba(0, 0, 0, 0.5), 0 0 30px ${config.glowStrong}`;
+      target.style.borderColor = config.color;
+    } else {
+      target.style.transform = "translateY(0) scale(1)";
+      target.style.boxShadow = `0 4px 20px rgba(0, 0, 0, 0.4), 0 0 15px ${config.glow}`;
+    }
+  };
+
+  const fightButtonStyle: React.CSSProperties = {
+    marginTop: "8px",
+    width: "100%",
+    padding: "8px 12px",
+    fontSize: "11px",
+    fontWeight: "700",
+    background: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+    color: "#ffffff",
+    border: "none",
+    borderRadius: "8px",
+    cursor: "pointer",
+    transition: "all 0.2s ease",
+    textTransform: "uppercase",
+    letterSpacing: "0.5px",
+    boxShadow: "0 2px 8px rgba(245, 158, 11, 0.3)",
+  };
 
   return (
     <div style={{ position: "relative" }}>
@@ -90,23 +163,19 @@ export function CardView({
             onClick();
           }
         }}
-        onMouseEnter={(e) => {
-          if (isClickable) {
-            Object.assign(e.currentTarget.style, hoverStyle);
-          }
-        }}
-        onMouseLeave={(e) => {
-          if (isClickable) {
-            e.currentTarget.style.transform = "";
-            e.currentTarget.style.boxShadow = cardStyle.boxShadow as string;
-          }
-        }}
+        onMouseEnter={(e) => handleHover(e, true)}
+        onMouseLeave={(e) => handleHover(e, false)}
         role={onClick ? "button" : undefined}
         tabIndex={onClick && !disabled ? 0 : undefined}
       >
+        <div style={glowOverlayStyle} />
+        <div style={iconContainerStyle}>
+          <config.Icon size={iconSize} color={config.color} />
+        </div>
         <div style={valueStyle}>{card.value}</div>
-        <div style={typeStyle}>{typeLabels[card.type]}</div>
+        <div style={labelStyle}>{config.label}</div>
       </div>
+
       {showFightOption &&
         card.type === "monster" &&
         onFightWithoutWeapon &&
@@ -117,27 +186,19 @@ export function CardView({
               onFightWithoutWeapon();
             }}
             type="button"
-            style={{
-              marginTop: "8px",
-              width: "100%",
-              padding: "6px 12px",
-              fontSize: "12px",
-              fontWeight: "600",
-              backgroundColor: "#f59e0b",
-              color: "#ffffff",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer",
-              transition: "background-color 0.2s ease",
-            }}
+            style={fightButtonStyle}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "#d97706";
+              e.currentTarget.style.transform = "translateY(-2px)";
+              e.currentTarget.style.boxShadow =
+                "0 4px 12px rgba(245, 158, 11, 0.5)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "#f59e0b";
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow =
+                "0 2px 8px rgba(245, 158, 11, 0.3)";
             }}
           >
-            Fight Without Weapon
+            Fight Barehanded
           </button>
         )}
     </div>
