@@ -1,5 +1,4 @@
 import type { Card } from "../state/types";
-import { SkullIcon, SwordIcon, FlaskIcon } from "./Icons";
 import "./animations.css";
 
 interface CardViewProps {
@@ -18,26 +17,26 @@ const TYPE_CONFIG = {
     glow: "rgba(255, 71, 87, 0.4)",
     glowStrong: "rgba(255, 71, 87, 0.6)",
     label: "Monster",
-    Icon: SkullIcon,
+    image: "/enemy.png",
   },
   weapon: {
     color: "#3b82f6",
     glow: "rgba(59, 130, 246, 0.4)",
     glowStrong: "rgba(59, 130, 246, 0.6)",
     label: "Weapon",
-    Icon: SwordIcon,
+    image: "/weapon.png",
   },
   potion: {
     color: "#f472b6",
     glow: "rgba(244, 114, 182, 0.4)",
     glowStrong: "rgba(244, 114, 182, 0.6)",
     label: "Potion",
-    Icon: FlaskIcon,
+    image: "/potion.png",
   },
 };
 
 /**
- * Visual representation of a card with icons, glowing borders, and animations.
+ * Visual representation of a card with large images and value overlay.
  * @param props - Component props.
  * @returns Card component.
  */
@@ -54,26 +53,23 @@ export function CardView({
   const isClickable = onClick && !disabled;
   const isSmall = size === "small";
 
-  const cardWidth = isSmall ? "100px" : "140px";
-  const cardHeight = isSmall ? "140px" : "200px";
-  const valueSize = isSmall ? "32px" : "48px";
-  const iconSize = isSmall ? 20 : 28;
-  const labelSize = isSmall ? "10px" : "12px";
+  const cardWidth = isSmall ? "100px" : "150px";
+  const cardHeight = isSmall ? "150px" : "220px";
+  const imageSize = isSmall ? "70px" : "110px";
+  const valueSize = isSmall ? "28px" : "42px";
 
   const cardStyle: React.CSSProperties = {
     position: "relative",
     width: cardWidth,
     height: cardHeight,
     borderRadius: "16px",
-    padding: "16px",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    gap: "8px",
-    background: `linear-gradient(145deg, #2a2a40 0%, #1e1e2f 100%)`,
+    background: `linear-gradient(160deg, #2a2a40 0%, #1a1a2e 50%, ${config.color}15 100%)`,
     border: `2px solid ${config.color}`,
-    boxShadow: `0 4px 20px rgba(0, 0, 0, 0.4), 0 0 15px ${config.glow}`,
+    boxShadow: `0 4px 20px rgba(0, 0, 0, 0.4), 0 0 20px ${config.glow}`,
     cursor: isClickable ? "pointer" : "default",
     opacity: disabled ? 0.5 : 1,
     transition: "all 0.25s ease",
@@ -81,43 +77,40 @@ export function CardView({
     overflow: "hidden",
   };
 
-  const glowOverlayStyle: React.CSSProperties = {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    borderRadius: "14px",
-    background: `radial-gradient(ellipse at top, ${config.glow} 0%, transparent 70%)`,
-    opacity: 0.3,
-    pointerEvents: "none",
-  };
-
-  const iconContainerStyle: React.CSSProperties = {
+  const imageContainerStyle: React.CSSProperties = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    width: isSmall ? "36px" : "48px",
-    height: isSmall ? "36px" : "48px",
-    borderRadius: "12px",
-    background: `linear-gradient(135deg, ${config.color}20 0%, ${config.color}10 100%)`,
-    border: `1px solid ${config.color}40`,
+    width: imageSize,
+    height: imageSize,
+    marginBottom: isSmall ? "8px" : "12px",
+  };
+
+  const imageStyle: React.CSSProperties = {
+    width: "100%",
+    height: "100%",
+    objectFit: "contain",
+    filter: `drop-shadow(0 4px 12px ${config.glow}) drop-shadow(0 0 20px ${config.glow})`,
+  };
+
+  const valueContainerStyle: React.CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: isSmall ? "44px" : "64px",
+    height: isSmall ? "44px" : "64px",
+    borderRadius: "50%",
+    background: `linear-gradient(135deg, ${config.color} 0%, ${config.color}cc 100%)`,
+    boxShadow: `0 4px 15px ${config.glow}, inset 0 1px 0 rgba(255, 255, 255, 0.2)`,
+    border: "2px solid rgba(255, 255, 255, 0.2)",
   };
 
   const valueStyle: React.CSSProperties = {
     fontSize: valueSize,
     fontWeight: "800",
-    color: config.color,
+    color: "#ffffff",
     lineHeight: 1,
-    textShadow: `0 0 20px ${config.glow}`,
-  };
-
-  const labelStyle: React.CSSProperties = {
-    fontSize: labelSize,
-    fontWeight: "600",
-    color: "#94a3b8",
-    textTransform: "uppercase",
-    letterSpacing: "1.5px",
+    textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)",
   };
 
   const handleHover = (
@@ -127,19 +120,18 @@ export function CardView({
     if (!isClickable) return;
     const target = e.currentTarget;
     if (entering) {
-      target.style.transform = "translateY(-6px) scale(1.02)";
-      target.style.boxShadow = `0 8px 30px rgba(0, 0, 0, 0.5), 0 0 30px ${config.glowStrong}`;
-      target.style.borderColor = config.color;
+      target.style.transform = "translateY(-8px) scale(1.03)";
+      target.style.boxShadow = `0 12px 40px rgba(0, 0, 0, 0.5), 0 0 40px ${config.glowStrong}`;
     } else {
       target.style.transform = "translateY(0) scale(1)";
-      target.style.boxShadow = `0 4px 20px rgba(0, 0, 0, 0.4), 0 0 15px ${config.glow}`;
+      target.style.boxShadow = `0 4px 20px rgba(0, 0, 0, 0.4), 0 0 20px ${config.glow}`;
     }
   };
 
   const fightButtonStyle: React.CSSProperties = {
-    marginTop: "8px",
+    marginTop: "10px",
     width: "100%",
-    padding: "8px 12px",
+    padding: "10px 12px",
     fontSize: "11px",
     fontWeight: "700",
     background: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
@@ -168,12 +160,12 @@ export function CardView({
         role={onClick ? "button" : undefined}
         tabIndex={onClick && !disabled ? 0 : undefined}
       >
-        <div style={glowOverlayStyle} />
-        <div style={iconContainerStyle}>
-          <config.Icon size={iconSize} color={config.color} />
+        <div style={imageContainerStyle}>
+          <img src={config.image} alt={config.label} style={imageStyle} />
         </div>
-        <div style={valueStyle}>{card.value}</div>
-        <div style={labelStyle}>{config.label}</div>
+        <div style={valueContainerStyle}>
+          <span style={valueStyle}>{card.value}</span>
+        </div>
       </div>
 
       {showFightOption &&
