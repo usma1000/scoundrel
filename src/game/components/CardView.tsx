@@ -19,21 +19,21 @@ const TYPE_CONFIG = {
     glow: "rgba(255, 71, 87, 0.4)",
     glowStrong: "rgba(255, 71, 87, 0.6)",
     label: "Monster",
-    image: "/enemy.png",
+    image: `${import.meta.env.BASE_URL}enemy.png`,
   },
   weapon: {
     color: "#3b82f6",
     glow: "rgba(59, 130, 246, 0.4)",
     glowStrong: "rgba(59, 130, 246, 0.6)",
     label: "Weapon",
-    image: "/weapon.png",
+    image: `${import.meta.env.BASE_URL}weapon.png`,
   },
   potion: {
     color: "#f472b6",
     glow: "rgba(244, 114, 182, 0.4)",
     glowStrong: "rgba(244, 114, 182, 0.6)",
     label: "Potion",
-    image: "/potion.png",
+    image: `${import.meta.env.BASE_URL}potion.png`,
   },
 };
 
