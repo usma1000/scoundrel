@@ -20,46 +20,62 @@ export function ScoreModal({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 1000,
+    padding: '20px',
   };
 
   const contentStyle: React.CSSProperties = {
-    backgroundColor: 'white',
+    backgroundColor: '#ffffff',
     padding: '40px',
-    borderRadius: '8px',
+    borderRadius: '16px',
     textAlign: 'center',
-    maxWidth: '400px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)',
+    maxWidth: '500px',
+    width: '100%',
+    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
   };
 
-  const titleColor = status === 'dead' ? '#F44336' : '#4CAF50';
+  const titleColor = status === 'dead' ? '#ef4444' : '#10b981';
+  const titleEmoji = status === 'dead' ? '💀' : '🎉';
+  const titleText = status === 'dead' ? 'You Died!' : 'Dungeon Cleared!';
 
   return (
     <div style={modalStyle}>
       <div style={contentStyle}>
-        <h2 style={{ color: titleColor, marginBottom: '20px' }}>
-          {status === 'dead' ? '💀 You Died!' : '🎉 Dungeon Cleared!'}
-        </h2>
-        <p style={{ fontSize: '18px', marginBottom: '10px' }}>
-          Final Score: {score !== null ? score : 'N/A'}
-        </p>
-        <button
+        <div style={{ fontSize: '64px', marginBottom: '16px' }}>{titleEmoji}</div>
+        <h2
           style={{
-            padding: '10px 20px',
-            fontSize: '16px',
-            cursor: 'pointer',
-            border: '2px solid #333',
-            borderRadius: '4px',
-            backgroundColor: '#4CAF50',
-            color: 'white',
-            marginTop: '20px',
+            color: titleColor,
+            marginBottom: '24px',
+            fontSize: '2rem',
+            fontWeight: '700',
           }}
+        >
+          {titleText}
+        </h2>
+        <div
+          style={{
+            fontSize: '32px',
+            fontWeight: '700',
+            color: '#1a1a1a',
+            marginBottom: '32px',
+          }}
+        >
+          Final Score: {score !== null ? score : 'N/A'}
+        </div>
+        <button
           onClick={onPlayAgain}
           type="button"
+          style={{
+            backgroundColor: titleColor,
+            color: '#ffffff',
+            border: `2px solid ${titleColor}`,
+            fontSize: '18px',
+            padding: '14px 32px',
+          }}
         >
           Play Again
         </button>
