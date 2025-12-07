@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useState } from "react";
 import type { GameAction, GameState } from "../state/types";
 import { gameReducer } from "../state/reducer";
 import { createInitialGameState } from "../state/logic";
@@ -8,6 +8,7 @@ import { EquippedWeapon } from "./EquippedWeapon";
 import { DiscardPile } from "./DiscardPile";
 import { HealthBar } from "./HealthBar";
 import { ScoreModal } from "./ScoreModal";
+import { InstructionsModal } from "./InstructionsModal";
 import { TopBar } from "./TopBar";
 import "./animations.css";
 
@@ -15,16 +16,28 @@ import "./animations.css";
  * Main game component that manages game state and renders all UI elements.
  * @returns ScoundrelGame component.
  */
+const FIRST_VISIT_KEY = "scoundrel-first-visit";
+
 export function ScoundrelGame(): JSX.Element {
   const [state, dispatch] = useReducer<
     (state: GameState, action: GameAction) => GameState
   >(gameReducer, createInitialGameState());
+
+  const [showInstructions, setShowInstructions] = useState<boolean>(false);
 
   useEffect(() => {
     if (state.status === "playing" && state.roomCards.length === 0) {
       dispatch({ type: "BUILD_ROOM" });
     }
   }, [state.status, state.roomCards.length]);
+
+  useEffect(() => {
+    const hasVisited = localStorage.getItem(FIRST_VISIT_KEY);
+    if (!hasVisited) {
+      setShowInstructions(true);
+      localStorage.setItem(FIRST_VISIT_KEY, "true");
+    }
+  }, []);
 
   const handleNewGame = (): void => {
     dispatch({ type: "START_NEW_GAME" });
@@ -46,6 +59,14 @@ export function ScoundrelGame(): JSX.Element {
 
   const handlePlayAgain = (): void => {
     dispatch({ type: "START_NEW_GAME" });
+  };
+
+  const handleShowInstructions = (): void => {
+    setShowInstructions(true);
+  };
+
+  const handleCloseInstructions = (): void => {
+    setShowInstructions(false);
   };
 
   const canResolveMore =
@@ -82,7 +103,10 @@ export function ScoundrelGame(): JSX.Element {
 
   return (
     <div style={containerStyle}>
-      <TopBar onNewGame={handleNewGame} />
+      <TopBar
+        onNewGame={handleNewGame}
+        onShowInstructions={handleShowInstructions}
+      />
 
       <div style={contentStyle}>
         <div style={topSectionStyle}>
@@ -114,6 +138,10 @@ export function ScoundrelGame(): JSX.Element {
             score={state.score}
             onPlayAgain={handlePlayAgain}
           />
+        )}
+
+        {showInstructions && (
+          <InstructionsModal onClose={handleCloseInstructions} />
         )}
       </div>
     </div>

@@ -1,8 +1,9 @@
-import { RefreshIcon } from "./Icons";
+import { RefreshIcon, InfoIcon } from "./Icons";
 import "./animations.css";
 
 interface TopBarProps {
   onNewGame: () => void;
+  onShowInstructions: () => void;
 }
 
 /**
@@ -10,7 +11,10 @@ interface TopBarProps {
  * @param props - Component props.
  * @returns TopBar component.
  */
-export function TopBar({ onNewGame }: TopBarProps): JSX.Element {
+export function TopBar({
+  onNewGame,
+  onShowInstructions,
+}: TopBarProps): JSX.Element {
   const containerStyle: React.CSSProperties = {
     display: "flex",
     alignItems: "center",
@@ -48,6 +52,12 @@ export function TopBar({ onNewGame }: TopBarProps): JSX.Element {
     backgroundClip: "text",
   };
 
+  const buttonContainerStyle: React.CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    gap: "12px",
+  };
+
   const buttonStyle: React.CSSProperties = {
     display: "flex",
     alignItems: "center",
@@ -66,33 +76,73 @@ export function TopBar({ onNewGame }: TopBarProps): JSX.Element {
     minHeight: "auto",
   };
 
+  const infoButtonStyle: React.CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "12px",
+    fontSize: "15px",
+    fontWeight: "600",
+    background: "rgba(99, 102, 241, 0.2)",
+    color: "#818cf8",
+    border: "1px solid rgba(99, 102, 241, 0.3)",
+    borderRadius: "12px",
+    cursor: "pointer",
+    transition: "all 0.25s ease",
+    minWidth: "auto",
+    minHeight: "auto",
+  };
+
   return (
     <div style={containerStyle}>
       <h1 style={titleStyle}>
         <span style={accentStyle}>Scoundrel</span>
       </h1>
-      <button
-        onClick={onNewGame}
-        type="button"
-        style={buttonStyle}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.transform = "translateY(-2px)";
-          e.currentTarget.style.boxShadow =
-            "0 6px 20px rgba(99, 102, 241, 0.5)";
-          e.currentTarget.style.background =
-            "linear-gradient(135deg, #818cf8 0%, #6366f1 100%)";
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.transform = "translateY(0)";
-          e.currentTarget.style.boxShadow =
-            "0 4px 15px rgba(99, 102, 241, 0.3)";
-          e.currentTarget.style.background =
-            "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)";
-        }}
-      >
-        <RefreshIcon size={18} color="#ffffff" />
-        New Game
-      </button>
+      <div style={buttonContainerStyle}>
+        <button
+          onClick={onShowInstructions}
+          type="button"
+          style={infoButtonStyle}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = "translateY(-2px)";
+            e.currentTarget.style.boxShadow =
+              "0 6px 20px rgba(99, 102, 241, 0.3)";
+            e.currentTarget.style.background = "rgba(99, 102, 241, 0.3)";
+            e.currentTarget.style.borderColor = "rgba(99, 102, 241, 0.5)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = "translateY(0)";
+            e.currentTarget.style.boxShadow = "none";
+            e.currentTarget.style.background = "rgba(99, 102, 241, 0.2)";
+            e.currentTarget.style.borderColor = "rgba(99, 102, 241, 0.3)";
+          }}
+          aria-label="Show instructions"
+        >
+          <InfoIcon size={18} color="currentColor" />
+        </button>
+        <button
+          onClick={onNewGame}
+          type="button"
+          style={buttonStyle}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = "translateY(-2px)";
+            e.currentTarget.style.boxShadow =
+              "0 6px 20px rgba(99, 102, 241, 0.5)";
+            e.currentTarget.style.background =
+              "linear-gradient(135deg, #818cf8 0%, #6366f1 100%)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = "translateY(0)";
+            e.currentTarget.style.boxShadow =
+              "0 4px 15px rgba(99, 102, 241, 0.3)";
+            e.currentTarget.style.background =
+              "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)";
+          }}
+        >
+          <RefreshIcon size={18} color="#ffffff" />
+          New Game
+        </button>
+      </div>
     </div>
   );
 }
