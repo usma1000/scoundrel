@@ -174,11 +174,11 @@ export function InstructionsModal({
         </div>
 
         <div style={sectionStyle}>
-          <h3 style={sectionTitleStyle}>Room Structure</h3>
+          <h3 style={sectionTitleStyle}>Rounds</h3>
           <p style={textStyle}>
-            Each room has <span style={highlightStyle}>4 cards</span>. You must
+            Each round has <span style={highlightStyle}>4 cards</span>. You must
             resolve <span style={highlightStyle}>exactly 3 cards</span> per
-            room. The 4th card carries forward to the next room.
+            round. The 4th card carries forward to the next round.
           </p>
         </div>
 
@@ -192,11 +192,14 @@ export function InstructionsModal({
             </li>
             <li style={listItemStyle}>
               <span style={weaponStyle}>Weapons</span>: Equip to reduce monster
-              damage. Damage taken ={" "}
-              <span style={highlightStyle}>monster value - weapon power</span>.
-              Weapons can only fight monsters equal to or weaker than the last
-              monster it defeated. You can choose to fight barehanded if you
-              don't want to degrade your weapon.
+              damage.{" "}
+              <span style={highlightStyle}>
+                Damage taken = monster value - weapon power
+              </span>
+              . You can only have one weapon equipped at a time. Weapons can
+              only fight monsters equal to or weaker than the last monster it
+              defeated. You can choose to fight barehanded if you don't want to
+              degrade your weapon.
             </li>
             <li style={listItemStyle}>
               <span style={potionStyle}>Potions</span>: Heal for their value.{" "}
@@ -207,11 +210,12 @@ export function InstructionsModal({
         </div>
 
         <div style={sectionStyle}>
-          <h3 style={sectionTitleStyle}>Skipping Rooms</h3>
+          <h3 style={sectionTitleStyle}>Skipping Rounds</h3>
           <p style={textStyle}>
-            You can skip a room to send all cards to the bottom of the deck, but{" "}
+            You can skip a round to send all cards to the bottom of the deck,
+            but{" "}
             <span style={highlightStyle}>
-              you cannot skip two rooms in a row
+              you cannot skip two rounds in a row
             </span>
             .
           </p>

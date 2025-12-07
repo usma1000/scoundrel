@@ -1,3 +1,4 @@
+import React from "react";
 import type { Card, EquippedWeapon } from "../state/types";
 import { CardView } from "./CardView";
 import { SkipIcon } from "./Icons";
@@ -43,7 +44,7 @@ export function Room({
   canSkipRoom,
   cardsResolvedThisTurn,
   canResolveMore,
-}: RoomProps): JSX.Element {
+}: RoomProps): React.ReactElement {
   const canSelect = canResolveMore && cardsResolvedThisTurn < 3;
   const remainingCards = cards.filter(
     (c) => !resolvedCardIds.includes(c.id)

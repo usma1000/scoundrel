@@ -1,3 +1,4 @@
+import React from "react";
 import type { Card } from "../state/types";
 import "./animations.css";
 
@@ -50,7 +51,7 @@ export function CardView({
   size = "normal",
   animationDelay = 0,
   weaponBlocked = false,
-}: CardViewProps): JSX.Element {
+}: CardViewProps): React.ReactElement {
   const config = TYPE_CONFIG[card.type];
   const isClickable = onClick && !disabled;
   const isSmall = size === "small";
